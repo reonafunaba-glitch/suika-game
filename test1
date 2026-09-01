@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ミニスイカゲーム</title>
+
+<style>
+body{
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#f8f3df;
+}
+
+canvas{
+    background:#ffffff;
+    border:4px solid #333;
+}
+</style>
+</head>
+<body>
+
+<canvas id="game" width="400" height="600"></canvas>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const fruits = [
+    { r:20, color:"#ff6b6b", emoji:"🍒" },
+    { r:30, color:"#ffa94d", emoji:"🍊" },
+    { r:40, color:"#69db7c", emoji:"🍎" },
+    { r:50, color:"#4dabf7", emoji:"🍈" },
+    { r:60, color:"#b197fc", emoji:"🍉" }
+];
+
+let score = 0;
+let mouseX = 200;
+
+let nextFruit = Math.floor(Math.random() * 3);
+
+let gameOver = false;
+const gameOverLine = 120;
+
+const items = [];
+
+canvas.addEventListener("mousemove",(e)=>{
+
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+});
+
+canvas.addEventListener("click",()=>{
+
+    if(gameOver) return;
+
+    const r = fruits[nextFruit].r;
+
+    items.push({
+        x: Math.max(r, Math.min(mouseX, canvas.width - r)),
+        y: 20,
+        level: nextFruit,
+        vy: 0
+    });
+
+    nextFruit = Math.floor(Math.random() * 3);
+});
+
+function update(){
+
+    if(gameOver) return;
+
+    // 重力
+    for(const item of items){
+
+        item.vy += 0.25;
+        item.y += item.vy;
+
+        const r = fruits[item.level].r;
+
+        // 左右補正
+        if(item.x < r){
+            item.x = r;
+        }
+
+        if(item.x > canvas.width - r){
+            item.x = canvas.width - r;
+        }
+
+        // 床
+        if(item.y > canvas.height - r){
+
+            item.y = canvas.height - r;
+            item.vy = 0;
+        }
+    }
+
+    // 合体・押し合い
+    for(let i = 0; i < items.length; i++){
+
+        for(let j = i + 1; j < items.length; j++){
+
+            const a = items[i];
+            const b = items[j];
+
+            const ra = fruits[a.level].r;
+            const rb = fruits[b.level].r;
+
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if(dist === 0) continue;
+
+            const minDist = ra + rb;
+
+            // 同じ果物なら合体
+            if(a.level === b.level){
+
+                if(dist < minDist){
+
+                    if(a.level < fruits.length - 1){
+
+                        a.level++;
+
+                        a.x = (a.x + b.x) / 2;
+                        a.y = (a.y + b.y) / 2;
+
+                        score += (a.level + 1) * 10;
+                    }
+
+                    items.splice(j,1);
+  
