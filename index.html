@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ミニスイカゲーム</title>
+
+<style>
+body{
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#f8f3df;
+}
+
+canvas{
+    background:#ffffff;
+    border:4px solid #333;
+}
+</style>
+</head>
+<body>
+
+<canvas id="game" width="400" height="600"></canvas>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const fruits = [
+    { r:20, color:"#ff6b6b", emoji:"🍒" },
+    { r:30, color:"#ffa94d", emoji:"🍊" },
+    { r:40, color:"#69db7c", emoji:"🍎" },
+    { r:50, color:"#4dabf7", emoji:"🍈" },
+    { r:60, color:"#b197fc", emoji:"🍉" }
+];
+
+let score = 0;
+let mouseX = 200;
+
+let nextFruit = Math.floor(Math.random() * 3);
+
+let gameOver = false;
+const gameOverLine = 120;
+
+const items = [];
+
+canvas.addEventListener("mousemove",(e)=>{
+
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+});
+
+canvas.addEventListener("click",()=>{
+
+    if(gameOver) return;
+
+    const r = fruits[nextFruit].r;
+
+    items.push({
+        x: Math.max(r, Math.min(mouseX, canvas.width - r)),
+        y: 20,
+        level: nextFruit,
+        vy: 0
+    });
+
+    nextFruit = Math.floor(Math.random() * 3);
+});
+
+function update(){
+
+    if(gameOver) return;
+
+    // 重力
+    for(const item of items){
+
+        item.vy += 0.25;
+        item.y += item.vy;
+
+        const r = fruits[item.level].r;
+
+        // 左右補正
+        if(item.x < r){
+            item.x = r;
+        }
+
+        if(item.x > canvas.width - r){
+            item.x = canvas.width - r;
+        }
+
+        // 床
+        if(item.y > canvas.height - r){
+
+            item.y = canvas.height - r;
+            item.vy = 0;
+        }
+    }
+
+    // 合体・押し合い
+    for(let i = 0; i < items.length; i++){
+
+        for(let j = i + 1; j < items.length; j++){
+
+            const a = items[i];
+            const b = items[j];
+
+            const ra = fruits[a.level].r;
+            const rb = fruits[b.level].r;
+
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if(dist === 0) continue;
+
+            const minDist = ra + rb;
+
+            // 同じ果物なら合体
+            if(a.level === b.level){
+
+                if(dist < minDist){
+
+                    if(a.level < fruits.length - 1){
+
+                        a.level++;
+
+                        a.x = (a.x + b.x) / 2;
+                        a.y = (a.y + b.y) / 2;
+
+                        score += (a.level + 1) * 10;
+                    }
+
+                    items.splice(j,1);
+                    j--;
+
+                    continue;
+                }
+            }
+            else{
+
+                // 違う果物なら押し離す
+                if(dist < minDist){
+
+                    const overlap = minDist - dist;
+
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+
+                    a.x -= nx * overlap * 0.5;
+                    a.y -= ny * overlap * 0.5;
+
+                    b.x += nx * overlap * 0.5;
+                    b.y += ny * overlap * 0.5;
+
+                    // 壁内補正
+                    a.x = Math.max(
+                        fruits[a.level].r,
+                        Math.min(
+                            a.x,
+                            canvas.width - fruits[a.level].r
+                        )
+                    );
+
+                    b.x = Math.max(
+                        fruits[b.level].r,
+                        Math.min(
+                            b.x,
+                            canvas.width - fruits[b.level].r
+                        )
+                    );
+                }
+            }
+        }
+    }
+
+    // ゲームオーバー判定
+    for(const item of items){
+
+        const r = fruits[item.level].r;
+
+        if(
+            item.y - r < gameOverLine &&
+            item.vy === 0
+        ){
+            gameOver = true;
+        }
+    }
+}
+
+function draw(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // スコア
+    ctx.fillStyle = "#222";
+    ctx.font = "24px Arial";
+    ctx.fillText("Score : " + score,10,35);
+
+    // NEXT
+    ctx.fillText("NEXT",290,35);
+
+    const next = fruits[nextFruit];
+
+    ctx.beginPath();
+    ctx.arc(
+        340,
+        80,
+        next.r,
+        0,
+        Math.PI * 2
+    );
+    ctx.fillStyle = next.color;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.font = "30px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(next.emoji,340,80);
+
+    // GAME OVERライン
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(0, gameOverLine);
+    ctx.lineTo(canvas.width, gameOverLine);
+    ctx.stroke();
+
+    // 投下位置ガイド
+    if(!gameOver){
+
+        ctx.beginPath();
+        ctx.arc(mouseX,20,10,0,Math.PI * 2);
+        ctx.strokeStyle = "red";
+        ctx.stroke();
+    }
+
+    // 果物
+    for(const item of items){
+
+        const fruit = fruits[item.level];
+
+        ctx.beginPath();
+        ctx.arc(
+            item.x,
+            item.y,
+            fruit.r,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = fruit.color;
+        ctx.fill();
+
+        ctx.strokeStyle = "#333";
+        ctx.stroke();
+
+        ctx.font = `${Math.max(18, fruit.r)}px serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+            fruit.emoji,
+            item.x,
+            item.y
+        );
+    }
+
+    // GAME OVER画面
+    if(gameOver){
+
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "48px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+            "GAME OVER",
+            canvas.width / 2,
+            canvas.height / 2
+        );
+
+        ctx.font = "24px Arial";
+
+        ctx.fillText(
+            "Score : " + score,
+            canvas.width / 2,
+            canvas.height / 2 + 60
+        );
+    }
+}
+
+function loop(){
+
+    update();
+    draw();
+
+    requestAnimationFrame(loop);
+}
+
+loop();
+
+</script>
+
+</body>
+</html>
