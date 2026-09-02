@@ -178,16 +178,14 @@ else if(dist < minDist){
     // 積み上がった時のみゲームオーバー
     for(const item of items){
 
-        const r = fruits[item.level].r;
+    const r = fruits[item.level].r;
 
-        if(
-            item.vy === 0 &&
-            item.y > 180 &&
-            item.y - r < gameOverLine
-        ){
-            gameOver = true;
-        }
+    if(item.y - r < gameOverLine){
+
+        gameOver = true;
+        break;
     }
+}
 }
 
 function draw(){
@@ -267,7 +265,7 @@ function draw(){
         ctx.strokeStyle = "#333";
         ctx.stroke();
 
-        ctx.font = `${Math.min(fruit.r,50)}px serif`;
+        ctx.font = `${fruit.r * 0.7}px serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
