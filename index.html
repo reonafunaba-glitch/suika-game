@@ -16,7 +16,7 @@ body{
 }
 
 canvas{
-    background:#fff;
+    background:white;
     border:4px solid #333;
 }
 </style>
@@ -44,18 +44,13 @@ const fruits = [
 
 let score = 0;
 let mouseX = 200;
-
 let nextFruit = Math.floor(Math.random() * 5);
 
 let gameOver = false;
 let canDrop = true;
 
-let clearEffect = 0;
-let clearText = "";
-
-const gameOverLine = 120;
-
 const items = [];
+const gameOverLine = 120;
 
 canvas.addEventListener("mousemove",(e)=>{
     const rect = canvas.getBoundingClientRect();
@@ -91,10 +86,15 @@ function update(){
 
     for(const item of items){
 
-        item.vy += 0.25;
+        item.vy += 0.3;
         item.y += item.vy;
 
         const r = fruits[item.level].r;
+
+        if(item.y > canvas.height - r){
+            item.y = canvas.height - r;
+            item.vy = 0;
+        }
 
         if(item.x < r){
             item.x = r;
@@ -102,11 +102,6 @@ function update(){
 
         if(item.x > canvas.width - r){
             item.x = canvas.width - r;
-        }
-
-        if(item.y > canvas.height - r){
-            item.y = canvas.height - r;
-            item.vy = 0;
         }
     }
 
@@ -122,73 +117,40 @@ function update(){
 
             const dx = b.x - a.x;
             const dy = b.y - a.y;
-
             const dist = Math.sqrt(dx*dx + dy*dy);
 
             if(dist === 0) continue;
 
             const minDist = ra + rb;
 
-            if(a.level === b.level){
+            if(a.level === b.level && dist < minDist){
 
-                if(dist < minDist){
+                if(a.level < fruits.length - 1){
 
-                    if(a.level < fruits.length - 1){
+                    a.level++;
 
-                        a.level++;
+                    a.x = (a.x+b.x)/2;
+                    a.y = (a.y+b.y)/2;
 
-                        a.x = (a.x + b.x) / 2;
-                        a.y = (a.y + b.y) / 2;
-
-                        score += Math.pow(2,a.level) * 20;
-
-                        clearEffect = 90;
-                        clearText = fruits[a.level].emoji;
-
-                        if(a.level === fruits.length - 1){
-                            score += 5000;
-                            clearEffect = 180;
-                            clearText = "🍉 COMPLETE!";
-                        }
-                    }
-
-                    items.splice(j,1);
-                    j--;
-
-                    continue;
+                    score += Math.pow(2,a.level) * 20;
                 }
 
-            }else{
-
-                if(dist < minDist){
-
-                    const overlap = minDist - dist;
-
-                    const nx = dx / dist;
-                    const ny = dy / dist;
-
-                    a.x -= nx * overlap * 0.5;
-                    a.y -= ny * overlap * 0.5;
-
-                    b.x += nx * overlap * 0.5;
-                    b.y += ny * overlap * 0.5;
-                }
+                items.splice(j,1);
+                j--;
             }
         }
     }
 
-    let over = false;
-
     for(const item of items){
 
-        if(item.y < gameOverLine){
-            over = true;
-            break;
-        }
-    }
+        const r = fruits[item.level].r;
 
-    if(over){
-        gameOver = true;
+        if(
+            item.y - r < gameOverLine &&
+            item.y > 150
+        ){
+            gameOver = true;
+        }
     }
 }
 
@@ -196,20 +158,19 @@ function draw(){
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    // SCORE
-    ctx.fillStyle = "#222";
-    ctx.font = "24px Arial";
+    ctx.fillStyle="#222";
+    ctx.font="24px Arial";
     ctx.fillText("Score : " + score,20,40);
 
     // NEXT
-    ctx.font = "22px Arial";
-    ctx.fillText("NEXT",270,35);
+    ctx.font="20px Arial";
+    ctx.fillText("NEXT",280,35);
 
     const next = fruits[nextFruit];
 
     ctx.beginPath();
     ctx.arc(
-        320,
+        330,
         60,
         25,
         0,
@@ -218,21 +179,19 @@ function draw(){
 
     ctx.fillStyle = next.color;
     ctx.fill();
-
-    ctx.strokeStyle = "#333";
     ctx.stroke();
 
-    ctx.font = "24px serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(next.emoji,320,60);
+    ctx.font="24px serif";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(next.emoji,330,60);
 
-    // GAME OVER LINE
+    // ライン
     ctx.beginPath();
     ctx.moveTo(0,gameOverLine);
     ctx.lineTo(canvas.width,gameOverLine);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle="red";
+    ctx.lineWidth=3;
     ctx.stroke();
 
     // ガイド
@@ -240,7 +199,7 @@ function draw(){
 
         ctx.beginPath();
         ctx.arc(mouseX,20,10,0,Math.PI*2);
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle="red";
         ctx.stroke();
     }
 
@@ -255,18 +214,15 @@ function draw(){
             item.y,
             fruit.r,
             0,
-            Math.PI * 2
+            Math.PI*2
         );
 
         ctx.fillStyle = fruit.color;
         ctx.fill();
-
-        ctx.strokeStyle = "#333";
         ctx.stroke();
 
         ctx.font = `${Math.min(fruit.r,50)}px serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#000";
 
         ctx.fillText(
             fruit.emoji,
@@ -275,44 +231,13 @@ function draw(){
         );
     }
 
-    // 合体演出
-    if(clearEffect > 0){
-
-        clearEffect--;
-
-        ctx.fillStyle = "rgba(255,255,255,0.5)";
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        ctx.fillStyle = "#FFD700";
-
-        ctx.font = "bold 42px Arial";
-
-        ctx.fillText(
-            clearText,
-            canvas.width / 2,
-            canvas.height / 2
-        );
-    }
-
-    // GAME OVER
     if(gameOver){
 
-        ctx.fillStyle = "rgba(0,0,0,0.7)";
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+        ctx.fillStyle="rgba(0,0,0,0.7)";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
 
-        ctx.fillStyle = "white";
-
-        ctx.font = "48px Arial";
+        ctx.fillStyle="white";
+        ctx.font="48px Arial";
 
         ctx.fillText(
             "GAME OVER",
@@ -320,7 +245,7 @@ function draw(){
             canvas.height/2
         );
 
-        ctx.font = "24px Arial";
+        ctx.font="24px Arial";
 
         ctx.fillText(
             "Score : " + score,
@@ -341,6 +266,5 @@ function loop(){
 loop();
 
 </script>
-
 </body>
 </html>
