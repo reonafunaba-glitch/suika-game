@@ -51,6 +51,7 @@ let canDrop = true;
 
 let effectTimer = 0;
 let effectText = "";
+    let completeTimer = 0;
 
 const gameOverLine = 90;
 const items = [];
@@ -140,10 +141,15 @@ for(let i=0;i<items.length;i++){
 
     if(a.level < fruits.length - 1){
 
-        a.level++;
+       a.level++;
 
-        a.x = (a.x + b.x) / 2;
-        a.y = (a.y + b.y) / 2;
+if(a.level === fruits.length - 1){
+    score += 5000;
+    completeTimer = 180;
+}
+
+a.x = (a.x + b.x) / 2;
+a.y = (a.y + b.y) / 2;
 
         score += Math.pow(2,a.level) * 20;
     }
@@ -279,6 +285,31 @@ function draw(){
         );
     }
 
+if(completeTimer > 0){
+
+    completeTimer--;
+
+    ctx.fillStyle = "rgba(255,215,0,0.4)";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.font = "bold 42px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(
+        "🍉 おめでとう！",
+        canvas.width / 2,
+        canvas.height / 2
+    );
+}
+    
     // 演出
     if(gameOver){
 
