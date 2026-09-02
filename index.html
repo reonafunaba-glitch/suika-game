@@ -100,10 +100,14 @@ item.vx *= 0.98;
 
         const r = fruits[item.level].r;
 
-        if(item.y > canvas.height - r){
-            item.y = canvas.height - r;
-            item.vy = 0;
-        }
+        if(item.y >= canvas.height - r){
+
+    item.y = canvas.height - r;
+
+    if(item.vy > 0){
+        item.vy = 0;
+    }
+}
 
        if(item.x < r){
     item.x = r;
@@ -145,7 +149,7 @@ for(let i=0;i<items.length;i++){
 
 if(a.level === fruits.length - 1){
     score += 5000;
-    completeTimer = 180;
+    completeTimer = 300;
 }
 
 a.x = (a.x + b.x) / 2;
@@ -165,10 +169,10 @@ else if(dist < minDist){
     const ny = dy / dist;
 
     a.x -= nx * overlap * 0.5;
-    a.y -= ny * overlap * 0.5;
+    a.y -= ny * overlap * 0.25;
 
     b.x += nx * overlap * 0.5;
-    b.y += ny * overlap * 0.5;
+    b.y += ny * overlap * 0.25;
 
     a.vx -= nx * 0.25;
     b.vx += nx * 0.25;
