@@ -140,7 +140,7 @@ function update(){
                         a.level++;
                        if(a.level === fruits.length - 1){
     score += 1000;
-    clearEffect = 180;
+    clearEffect = 300;
 }
                     
 
@@ -336,6 +336,64 @@ ctx.font = `bold ${size}px Arial`;
     }
 
     // GAME OVER画面
+    // 🍉スイカ完成演出
+if(clearEffect > 0){
+
+    clearEffect--;
+
+    // フラッシュ
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // 金色背景
+    ctx.fillStyle = "rgba(255,215,0,0.4)";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const size = 50 + Math.sin(clearEffect * 0.2) * 10;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // 影
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    ctx.font = `bold ${size}px Arial`;
+
+    ctx.fillText(
+        "🍉 COMPLETE!",
+        canvas.width / 2 + 3,
+        canvas.height / 2 - 17
+    );
+
+    // 本体
+    ctx.fillStyle = "#FFD700";
+
+    ctx.fillText(
+        "🍉 COMPLETE!",
+        canvas.width / 2,
+        canvas.height / 2 - 20
+    );
+
+    // ボーナス
+    ctx.font = "bold 32px Arial";
+    ctx.fillStyle = "#FFFFFF";
+
+    ctx.fillText(
+        "+1000 BONUS!",
+        canvas.width / 2,
+        canvas.height / 2 + 35
+    );
+}
+``
     if(gameOver){
 
         ctx.fillStyle = "rgba(0,0,0,0.6)";
