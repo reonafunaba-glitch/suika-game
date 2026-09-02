@@ -239,32 +239,18 @@ function draw(){
 ctx.fillText("NEXT",270,30);
 
 const next = fruits[nextFruit];
+// NEXT
+ctx.fillText("NEXT",270,30);
+
 const next = fruits[nextFruit];
 
 ctx.beginPath();
-
 ctx.arc(
     320,
     50,
     25,
     0,
     Math.PI * 2
-);
-
-ctx.fillStyle = next.color;
-ctx.fill();
-
-ctx.strokeStyle = "#333";
-ctx.stroke();
-
-ctx.font = "24px serif";
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-
-ctx.fillText(
-    next.emoji,
-    320,
-    50
 );
 
 ctx.fillStyle = next.color;
@@ -276,6 +262,7 @@ ctx.textAlign = "center";
 ctx.textBaseline = "middle";
 
 ctx.fillText(next.emoji,320,50);
+
 
     // GAME OVERライン
     ctx.strokeStyle = "red";
