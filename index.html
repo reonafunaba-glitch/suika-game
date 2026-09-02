@@ -271,7 +271,7 @@ ctx.font = `bold ${size}px Arial`;
     ctx.fillText("Score : " + score,20,40);
 
     // NEXT
-    ctx.fillText("NEXT",290,35);
+    ctx.fillText("NEXT",270,30);
 
     const next = fruits[nextFruit];
     const nextRadius = Math.min(next.r, 40);
@@ -279,7 +279,8 @@ ctx.font = `bold ${size}px Arial`;
     ctx.beginPath();
     ctx.arc(
     320,
-    70,
+    50,
+    25,
     nextRadius,
         0,
         Math.PI * 2
@@ -291,7 +292,8 @@ ctx.font = `bold ${size}px Arial`;
     ctx.font = "30px serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(next.emoji,320,70);
+    ctx.font = "24px serif";
+ctx.fillText(next.emoji,320,50);
 
     // GAME OVERライン
     ctx.strokeStyle = "red";
