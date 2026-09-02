@@ -73,12 +73,19 @@ canvas.addEventListener("click",()=>{
 
     const r = fruits[nextFruit].r;
 
-    items.push({
-        x: Math.max(r, Math.min(mouseX, canvas.width-r)),
-        y: 60,
-        vy: 0,
-        level: nextFruit
-    });
+   items.push({
+2
+x: Math.max(r, Math.min(mouseX, canvas.width-r)),
+3
+y: 30,
+4
+vx: 0,
+5
+vy: 0,
+6
+level: nextFruit
+7
+});
 
     nextFruit = Math.floor(Math.random() * 5);
 });
@@ -90,7 +97,11 @@ function update(){
     for(const item of items){
 
         item.vy += 0.25;
-        item.y += item.vy;
+
+item.x += item.vx;
+item.y += item.vy;
+
+item.vx *= 0.98;
 
         const r = fruits[item.level].r;
 
@@ -99,14 +110,16 @@ function update(){
             item.vy = 0;
         }
 
-        if(item.x < r){
-            item.x = r;
-        }
+       if(item.x < r){
+    item.x = r;
+    item.vx *= -0.3;
+}
 
-        if(item.x > canvas.width - r){
-            item.x = canvas.width - r;
-        }
-    }
+if(item.x > canvas.width - r){
+    item.x = canvas.width - r;
+    item.vx *= -0.3;
+}
+`
 
     for(let i=0;i<items.length;i++){
 
@@ -259,30 +272,6 @@ function draw(){
     }
 
     // 演出
-    if(effectTimer > 0){
-
-        effectTimer--;
-
-        ctx.fillStyle = "rgba(255,255,255,0.5)";
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        ctx.fillStyle = "#FFD700";
-        ctx.font = "bold 42px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        ctx.fillText(
-            effectText,
-            canvas.width/2,
-            canvas.height/2
-        );
-    }
-
     if(gameOver){
 
         ctx.fillStyle = "rgba(0,0,0,0.7)";
