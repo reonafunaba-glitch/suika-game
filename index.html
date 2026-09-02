@@ -278,7 +278,7 @@ function draw(){
         ctx.strokeStyle = "#333";
         ctx.stroke();
 
-        ctx.font = `${fruit.r * 0.7}px serif`;
+        ctx.font = `${Math.min(fruit.r * 0.6, 60)}px serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
