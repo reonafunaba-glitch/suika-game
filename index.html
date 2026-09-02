@@ -109,10 +109,12 @@ function update(){
         // 床
         if(item.y > canvas.height - r){
 
-            item.y = canvas.height - r;
-            item.vy = 0;
-        }
+    item.y = canvas.height - r;
+
+    if(item.vy > 0){
+        item.vy = 0;
     }
+}
 
     // 合体・押し合い
     for(let i = 0; i < items.length; i++){
@@ -266,18 +268,19 @@ ctx.font = `bold ${size}px Arial`;
     // スコア
     ctx.fillStyle = "#222";
     ctx.font = "24px Arial";
-    ctx.fillText("Score : " + score,10,35);
+    ctx.fillText("Score : " + score,20,40);
 
     // NEXT
     ctx.fillText("NEXT",290,35);
 
     const next = fruits[nextFruit];
+    const nextRadius = Math.min(next.r, 40);
 
     ctx.beginPath();
     ctx.arc(
-        340,
-        80,
-        next.r,
+    320,
+    70,
+    nextRadius,
         0,
         Math.PI * 2
     );
@@ -288,7 +291,7 @@ ctx.font = `bold ${size}px Arial`;
     ctx.font = "30px serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(next.emoji,340,80);
+    ctx.fillText(next.emoji,320,70);
 
     // GAME OVERライン
     ctx.strokeStyle = "red";
