@@ -168,27 +168,6 @@ else if(dist < minDist){
     b.vy += ny * 0.05;
 }
 
-                if(a.level < fruits.length - 1){
-
-                    a.level++;
-
-                    a.x = (a.x + b.x) / 2;
-                    a.y = (a.y + b.y) / 2;
-
-                    score += Math.pow(2,a.level) * 20;
-
-                    effectText = fruits[a.level].emoji;
-                    effectTimer = 60;
-
-                    if(a.level === fruits.length - 1){
-                        score += 5000;
-                        effectText = "🍉 COMPLETE!";
-                        effectTimer = 180;
-                    }
-                }
-
-                items.splice(j,1);
-                j--;
             }
         }
     }
