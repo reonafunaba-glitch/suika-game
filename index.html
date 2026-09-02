@@ -74,17 +74,11 @@ canvas.addEventListener("click",()=>{
     const r = fruits[nextFruit].r;
 
    items.push({
-2
-x: Math.max(r, Math.min(mouseX, canvas.width-r)),
-3
-y: 30,
-4
-vx: 0,
-5
-vy: 0,
-6
-level: nextFruit
-7
+    x: Math.max(r, Math.min(mouseX, canvas.width-r)),
+    y: 30,
+    vx: 0,
+    vy: 0,
+    level: nextFruit
 });
 
     nextFruit = Math.floor(Math.random() * 5);
@@ -119,7 +113,6 @@ if(item.x > canvas.width - r){
     item.x = canvas.width - r;
     item.vx *= -0.3;
 }
-`
 
     for(let i=0;i<items.length;i++){
 
@@ -141,6 +134,25 @@ if(item.x > canvas.width - r){
             const minDist = ra + rb;
 
             if(a.level === b.level && dist < minDist){
+                else if(dist < minDist){
+
+    const overlap = minDist - dist;
+
+    const nx = dx / dist;
+    const ny = dy / dist;
+
+    a.x -= nx * overlap * 0.5;
+    a.y -= ny * overlap * 0.5;
+
+    b.x += nx * overlap * 0.5;
+    b.y += ny * overlap * 0.5;
+
+    a.vx -= nx * 0.25;
+    b.vx += nx * 0.25;
+
+    a.vy -= ny * 0.05;
+    b.vy += ny * 0.05;
+}
 
                 if(a.level < fruits.length - 1){
 
