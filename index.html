@@ -32,14 +32,14 @@ const ctx = canvas.getContext("2d");
 
 const fruits = [
     { r:20, emoji:"🍒", color:"#ff6b6b" },
-    { r:30, emoji:"🍓", color:"#ff8787" },
-    { r:40, emoji:"🍊", color:"#ffa94d" },
-    { r:55, emoji:"🍋", color:"#ffd43b" },
-    { r:70, emoji:"🍎", color:"#69db7c" },
-    { r:90, emoji:"🍐", color:"#38d9a9" },
-    { r:115, emoji:"🍈", color:"#4dabf7" },
-    { r:145, emoji:"🍍", color:"#9775fa" },
-    { r:180, emoji:"🍉", color:"#cc5de8" }
+    { r:28, emoji:"🍓", color:"#ff8787" },
+    { r:38, emoji:"🍊", color:"#ffa94d" },
+    { r:50, emoji:"🍋", color:"#ffd43b" },
+    { r:65, emoji:"🍎", color:"#69db7c" },
+    { r:80, emoji:"🍐", color:"#38d9a9" },
+    { r:95, emoji:"🍈", color:"#4dabf7" },
+    { r:115, emoji:"🍍", color:"#9775fa" },
+    { r:135, emoji:"🍉", color:"#cc5de8" }
 ];
 
 let score = 0;
@@ -52,7 +52,7 @@ let canDrop = true;
 let effectTimer = 0;
 let effectText = "";
 
-const gameOverLine = 140;
+const gameOverLine = 90;
 const items = [];
 
 canvas.addEventListener("mousemove",(e)=>{
@@ -114,7 +114,10 @@ if(item.x > canvas.width - r){
     item.vx *= -0.3;
 }
 
+}
+    
 for(let i=0;i<items.length;i++){
+``
 
         for(let j=i+1;j<items.length;j++){
 
