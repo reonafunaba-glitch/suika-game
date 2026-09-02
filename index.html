@@ -31,11 +31,11 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const fruits = [
-    { r:20, color:"#ff6b6b", emoji:"🍒" },
-    { r:30, color:"#ffa94d", emoji:"🍊" },
-    { r:40, color:"#69db7c", emoji:"🍎" },
-    { r:50, color:"#4dabf7", emoji:"🍈" },
-    { r:60, color:"#b197fc", emoji:"🍉" }
+    { r:25, color:"#ff6b6b", emoji:"🍒" },
+    { r:40, color:"#ffa94d", emoji:"🍊" },
+    { r:60, color:"#69db7c", emoji:"🍎" },
+    { r:90, color:"#4dabf7", emoji:"🍈" },
+    { r:130, color:"#b197fc", emoji:"🍉" }
 ];
 
 let score = 0;
@@ -44,7 +44,9 @@ let mouseX = 200;
 let nextFruit = Math.floor(Math.random() * 3);
 
 let gameOver = false;
-const gameOverLine = 120;
+let overTimer = 0;
+let canDrop = true;
+const gameOverLine = 60;
 
 const items = [];
 
@@ -58,14 +60,25 @@ canvas.addEventListener("click",()=>{
 
     if(gameOver) return;
 
+    if(!canDrop) return;
+
+    canDrop = false;
+
+    setTimeout(()=>{
+        canDrop = true;
+    },500);
+
     const r = fruits[nextFruit].r;
 
     items.push({
-        x: Math.max(r, Math.min(mouseX, canvas.width - r)),
+        x: Math.max(r, Math.min(mouseX, canvas.width-r)),
         y: 20,
         level: nextFruit,
         vy: 0
     });
+
+    nextFruit = Math.floor(Math.random() * 3);
+});
 
     nextFruit = Math.floor(Math.random() * 3);
 });
@@ -127,11 +140,17 @@ function update(){
                     if(a.level < fruits.length - 1){
 
                         a.level++;
+                        if(a.level === fruits.length - 1){
+2
+score += 1000;
+3
+}
+                    
 
                         a.x = (a.x + b.x) / 2;
                         a.y = (a.y + b.y) / 2;
 
-                        score += (a.level + 1) * 10;
+                        score += Math.pow(2,a.level) * 20;
                     }
 
                     items.splice(j,1);
@@ -178,17 +197,30 @@ function update(){
     }
 
     // ゲームオーバー判定
-    for(const item of items){
+    let overLine = false;
 
-        const r = fruits[item.level].r;
+for(const item of items){
 
-        if(
-            item.y - r < gameOverLine &&
-            item.vy === 0
-        ){
-            gameOver = true;
-        }
+    const r = fruits[item.level].r;
+
+    if(item.y - r < gameOverLine){
+        overLine = true;
+        break;
     }
+}
+
+if(overLine){
+
+    overTimer++;
+
+    if(overTimer > 180){
+        gameOver = true;
+    }
+
+}else{
+
+    overTimer = 0;
+}
 }
 
 function draw(){
