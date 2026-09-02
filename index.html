@@ -147,27 +147,8 @@ for(let i=0;i<items.length;i++){
 
     items.splice(j,1);
     j--;
-
 }
 else if(dist < minDist){
-
-    const overlap = minDist - dist;
-
-    const nx = dx / dist;
-    const ny = dy / dist;
-
-    a.x -= nx * overlap * 0.5;
-    a.y -= ny * overlap * 0.5;
-
-    b.x += nx * overlap * 0.5;
-    b.y += ny * overlap * 0.5;
-
-    a.vx -= nx * 0.25;
-    b.vx += nx * 0.25;
-
-    a.vy -= ny * 0.05;
-    b.vy += ny * 0.05;
-}
 
     const overlap = minDist - dist;
 
