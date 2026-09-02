@@ -117,7 +117,7 @@ if(item.x > canvas.width - r){
 }
     
 for(let i=0;i<items.length;i++){
-``
+    
 
         for(let j=i+1;j<items.length;j++){
 
@@ -180,11 +180,14 @@ else if(dist < minDist){
 
     const r = fruits[item.level].r;
 
-    if(item.y - r < gameOverLine){
-
-        gameOver = true;
-        break;
-    }
+    if(
+    item.vy === 0 &&
+    item.y > 150 &&
+    item.y - r < gameOverLine
+){
+    gameOver = true;
+    break;
+}
 }
 
 function draw(){
