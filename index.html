@@ -46,6 +46,7 @@ let nextFruit = Math.floor(Math.random() * 3);
 let gameOver = false;
 let overTimer = 0;
 let canDrop = true;
+let clearEffect = 0;
 const gameOverLine = 120;
 
 const items = [];
@@ -137,8 +138,9 @@ function update(){
                     if(a.level < fruits.length - 1){
 
                         a.level++;
-                        if(a.level === fruits.length - 1){
+                       if(a.level === fruits.length - 1){
     score += 1000;
+    clearEffect = 180;
 }
                     
 
@@ -222,6 +224,41 @@ function draw(){
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
+// スイカ完成演出
+if(clearEffect > 0){
+
+    clearEffect--;
+
+    ctx.fillStyle = "rgba(255,215,0,0.3)";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "gold";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const size = 42 + Math.sin(clearEffect * 0.3) * 8;
+ctx.font = `bold ${size}px Arial`;
+
+    ctx.fillText(
+        "🍉 COMPLETE!",
+        canvas.width / 2,
+        canvas.height / 2 - 20
+    );
+
+    ctx.font = "bold 28px Arial";
+
+    ctx.fillText(
+        "+1000 BONUS!",
+        canvas.width / 2,
+        canvas.height / 2 + 35
+    );
+}
+    
     // スコア
     ctx.fillStyle = "#222";
     ctx.font = "24px Arial";
