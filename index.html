@@ -31,17 +31,21 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const fruits = [
-    { r:25, color:"#ff6b6b", emoji:"🍒" },
-    { r:40, color:"#ffa94d", emoji:"🍊" },
-    { r:60, color:"#69db7c", emoji:"🍎" },
-    { r:90, color:"#4dabf7", emoji:"🍈" },
-    { r:130, color:"#b197fc", emoji:"🍉" }
+    { r:20,  color:"#ff6b6b", emoji:"🍒" },
+    { r:30,  color:"#ff8787", emoji:"🍓" },
+    { r:40,  color:"#ffa94d", emoji:"🍊" },
+    { r:55,  color:"#ffd43b", emoji:"🍋" },
+    { r:70,  color:"#69db7c", emoji:"🍎" },
+    { r:90,  color:"#38d9a9", emoji:"🍐" },
+    { r:115, color:"#4dabf7", emoji:"🍈" },
+    { r:145, color:"#9775fa", emoji:"🍍" },
+    { r:180, color:"#cc5de8", emoji:"🍉" }
 ];
 
 let score = 0;
 let mouseX = 200;
 
-let nextFruit = Math.floor(Math.random() * 3);
+let nextFruit = Math.floor(Math.random() * 5);
 
 let gameOver = false;
 let overTimer = 0;
@@ -78,7 +82,7 @@ canvas.addEventListener("click",()=>{
         vy: 0
     });
 
-    nextFruit = Math.floor(Math.random() * 3);
+    nextFruit = Math.floor(Math.random() * 5);
 });
 
 function update(){
@@ -139,7 +143,7 @@ function update(){
 
                         a.level++;
                        if(a.level === fruits.length - 1){
-    score += 1000;
+    score += 5000;
     clearEffect = 300;
 }
                     
