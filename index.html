@@ -290,29 +290,6 @@ function draw(){
     }
 
 if(completeTimer > 0){
-
-    completeTimer--;
-
-    ctx.fillStyle = "rgba(255,215,0,0.4)";
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.fillStyle = "#ffffff";
-
-    ctx.font = "bold 42px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    ctx.fillText(
-        "🍉 スイカができたね！すっごい！",
-        canvas.width / 2,
-        canvas.height / 2
-    );
-}
     
     // 演出
     if(gameOver){
